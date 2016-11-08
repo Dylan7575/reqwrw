@@ -4,56 +4,53 @@
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.*;
 import java.net.Socket;
 
 public class GUI extends Frame implements MouseListener {
-    public static void main(String args[]){
+    public static void main(String args[]) {
         GUI f = new GUI();
     }
-    public GUI(){
+
+    public GUI() {
         Button b = new Button("Year");
         b.setName("Year");
-        b.setBounds(30,40,80,30);
+        b.setBounds(30, 40, 80, 30);
         b.addMouseListener(this);
         add(b);
 
         Button m = new Button("Month");
-        m.setName("Year");
-        m.setBounds(30,80,80,30);
+        m.setName("Month");
+        m.setBounds(30, 80, 80, 30);
         m.addMouseListener(this);
         add(m);
 
         Button d = new Button("Day");
-        d.setName("Year");
-        d.setBounds(30,120,80,30);
+        d.setName("Day");
+        d.setBounds(30, 120, 80, 30);
         d.addMouseListener(this);
         add(d);
 
         Button h = new Button("Hour");
-        h.setName("Year");
-        h.setBounds(30,160,80,30);
+        h.setName("Hour");
+        h.setBounds(30, 160, 80, 30);
         h.addMouseListener(this);
         add(h);
 
         Button a = new Button("Minute");
-        a.setName("Year");
-        a.setBounds(30,200,80,30);
+        a.setName("Minute");
+        a.setBounds(30, 200, 80, 30);
         a.addMouseListener(this);
         add(a);
 
         Button s = new Button("Second");
-        s.setName("Year");
-        s.setBounds(30,240,80,30);
+        s.setName("Second");
+        s.setBounds(30, 240, 80, 30);
         s.addMouseListener(this);
         add(s);
 
 
-
-
-
-
-
-        setSize(300,300);
+        setSize(300, 300);
         setLayout(null);
 
         setVisible(true);
@@ -74,10 +71,23 @@ public class GUI extends Frame implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-       String f =e.getComponent().getName();
+        String f =e.getComponent().getName();
         TextField temp = new TextField();
         try{
-            Socket connectSocket = new Socket("127.0.0.1",23660);
+            Socket connectSocket = new Socket("127.0.0.1",23619);
+            PrintWriter x = new PrintWriter(connectSocket.getOutputStream(),true);
+
+            BufferedReader r = new BufferedReader(new InputStreamReader(connectSocket.getInputStream()));
+            x.println(f);
+            temp.setEditable(false);
+            temp.setBounds(170, 125, 100, 100);
+
+            DataInputStream rk = new DataInputStream(new BufferedInputStream(connectSocket.getInputStream()));
+
+            temp.setText(rk.readLine());
+            add(temp);
+
+
 
 
         }
@@ -85,10 +95,13 @@ public class GUI extends Frame implements MouseListener {
             temp.setText("error");
         }
 
-        temp.setText("2016");
-        temp.setEditable(false);
-        temp.setBounds(170,125,100,100);
-        add(temp);
+
+
+
 
     }
 }
+
+
+
+

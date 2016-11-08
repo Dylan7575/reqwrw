@@ -11,6 +11,6 @@
 #include <arpa/inet.h>//for pton function
 
 
-#define SERVER_NAME "132.163.4.101"//server address port number and otm char defined in constants
+#define SERVER_NAME "128.138.140.44"//server address port number and otm char defined in constants
 #define PORT_NUM 13
 #define OTM_CHAR '*'
