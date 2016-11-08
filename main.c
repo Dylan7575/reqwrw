@@ -4,6 +4,7 @@
 char* read_line(int socket);
 char* daytime_connect();
 char* get_part(char* part,char*type);int main(int argc, char** argv);
+
 int main(int argc,char** argv){
 	int server_socket;                 // descriptor of server socket
 	struct sockaddr_in server_address; // for naming the server's listening socket
@@ -18,7 +19,7 @@ int main(int argc,char** argv){
 	// name the socket (making sure the correct network byte ordering is observed)
 	server_address.sin_family      = AF_INET;           // accept IP addresses
 	server_address.sin_addr.s_addr = htonl(INADDR_ANY); // accept clients on any interface
-	server_address.sin_port        = htons(23619);       // port to listen on
+	server_address.sin_port        = htons(23607);       // port to listen on
 
 	// binding unnamed socket to a particular port
 	if (bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1) {
@@ -31,38 +32,24 @@ int main(int argc,char** argv){
 		perror("Error listening on socket");
 		exit(EXIT_FAILURE);
 	}
-
-
-	//locking mutex so the server doesnt jump into the next client to fast
-	//	pthread_mutex_lock(&lock);
-	if ((client_socket = accept(server_socket, NULL, NULL)) == -1) {
-		perror("Error accepting client");
-	}
-	else {
-		//printf("Accepted client");
-		char*part=malloc(sizeof(char)*6);
-		char*final=malloc(sizeof(char)*6);
-		int i;
-		while((read(client_socket,&part[i++],1))>0){
-			printf("%i",strcmp(final,"Year"));
+	while(1){
+		if ((client_socket = accept(server_socket, NULL, NULL)) == -1) {
+			perror("Error accepting client");
 		}
-		int f =read(client_socket,part,6);
-		while(part[i]!='\0'){
-			final[i]=part[i++];
+		else {
+			char*part=malloc(sizeof(char)*6);
+			printf("Accepted Client");
 
+			read(client_socket,part,6);
+			char* temp =daytime_connect();
+			printf("%i",strcmp("Year",part));
+			temp = get_part(temp,part);
+			send(client_socket,temp, sizeof(temp),0);
+			close(client_socket);
+			free(part);
 		}
-
-
-
-
-	//	printf("%s",final);
-		char* temp =daytime_connect();
-		temp =get_part(temp,part);
-		//printf("%s",temp);
-		send(client_socket,temp, sizeof(temp),0);
-		//printf("%s",temp);
-
 	}
+
 }
 
 
@@ -127,9 +114,8 @@ char* get_part(char* part,char* type){
 	else{
 		printf("fail");
 	}
-	while(breaks>=0){
+	while(breaks>0){
 		char temp = part[i++];
-		printf("%c",temp);
 		if(temp == ' '||temp == '-'|| temp ==':'){
 			breaks-=1;
 		}

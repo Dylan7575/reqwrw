@@ -8,11 +8,17 @@ import java.io.*;
 import java.net.Socket;
 
 public class GUI extends Frame implements MouseListener {
+    private static TextField temp;
     public static void main(String args[]) {
         GUI f = new GUI();
     }
 
     public GUI() {
+
+        temp = new TextField();
+        temp.setEditable(false);
+        temp.setBounds(170, 125, 100, 100);
+
         Button b = new Button("Year");
         b.setName("Year");
         b.setBounds(30, 40, 80, 30);
@@ -72,23 +78,18 @@ public class GUI extends Frame implements MouseListener {
 
     public void mouseClicked(MouseEvent e) {
         String f =e.getComponent().getName();
-        TextField temp = new TextField();
+
         try{
-            Socket connectSocket = new Socket("127.0.0.1",23619);
+            Socket connectSocket = new Socket("127.0.0.1",23607);
             PrintWriter x = new PrintWriter(connectSocket.getOutputStream(),true);
 
             BufferedReader r = new BufferedReader(new InputStreamReader(connectSocket.getInputStream()));
-            x.println(f);
-            temp.setEditable(false);
-            temp.setBounds(170, 125, 100, 100);
+            x.printf("%s",f);
 
             DataInputStream rk = new DataInputStream(new BufferedInputStream(connectSocket.getInputStream()));
 
             temp.setText(rk.readLine());
             add(temp);
-
-
-
 
         }
         catch(Exception n){
